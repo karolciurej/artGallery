@@ -1,22 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { Image } from 'expo-image';
 import { FlatList, View, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
-import ArtworkItem from "../../components/artWork.jsx"
+import ArtworkItem from "../../components/artWork"
 import {
   useFonts,
   OpenSans_400Regular_Italic,
 } from '@expo-google-fonts/open-sans';
+import { Pressable, useColorScheme } from 'react-native';
+import Colors from '../../constants/Colors';
 
 
 const baseUrl = 'https://api.artic.edu/api/v1/artworks';
 const itemsPerPage = 15;
 
 export default function App() {
+  interface Artwork {
+    id: string;
+    title: string;
+    imageUrl: string;
+  }
+
+  interface ArtworkApi {
+    id: string;
+    title: string;
+    image_id: string;
+  }
+
+  const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ? colorScheme : 'light'];
+
+  const styles = StyleSheet.create({
+    listContainer: {
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      padding: 20,
+      backgroundColor: themeColors.background, // Apply the dynamic background color
+  
+    },
+  
+  });
+  
 
   let [fontsLoaded] = useFonts({ OpenSans_400Regular_Italic })
   const fallbackImage = require('../../assets/images/photo.png');
   
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Artwork[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isEndReached, setIsEndReached] = useState(false);
@@ -32,7 +60,7 @@ export default function App() {
     fetch(`${baseUrl}?limit=${itemsPerPage}&page=${page}`)
       .then((response) => response.json())
       .then((responseJson) => {
-        const newArtworks = responseJson.data.map((artwork) => {
+        const newArtworks = responseJson.data.map((artwork: ArtworkApi) => {
           return {
             id: `${artwork.id}`,
             title: artwork.title,
@@ -58,11 +86,11 @@ export default function App() {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: { item: Artwork }) => {
     return <ArtworkItem item={item} />;
   };
 
-  const generateUniqueId = (item, index) => {
+  const generateUniqueId = (item: Artwork, index: number) => {
     return item.id + '-' + index; // Combines the artwork ID with its index
   };
   return (
@@ -74,19 +102,10 @@ export default function App() {
         keyExtractor={generateUniqueId}
         onEndReached={loadMoreItems}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={isLoading && <ActivityIndicator size="large" />}
+        ListFooterComponent={isLoading ? <ActivityIndicator size="large" /> : null}
         contentContainerStyle={styles.listContainer}
       />
 </>
   );
 }
 
-const styles = StyleSheet.create({
-  listContainer: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    padding: 20,
-    backgroundColor: '#000',
-  },
-
-});

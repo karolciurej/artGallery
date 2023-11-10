@@ -2,8 +2,16 @@ import { useState } from 'react';
 import { FlatList, View, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 
+interface ArtworkItemProps {
+  item: {
+    imageUrl: string;
+    title: string;
+  };
+}
 
-export default ArtworkItem = ({ item }) => {
+const ArtworkItem = ({ item }: ArtworkItemProps) => {
+
+
     const [hasError, setHasError] = useState(false);
     const fallbackImage = require('../assets/images/photo.png');
   
@@ -39,3 +47,5 @@ export default ArtworkItem = ({ item }) => {
     }
   });
   
+
+  export default ArtworkItem
