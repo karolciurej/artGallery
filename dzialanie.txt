@@ -10,3 +10,4 @@ Problemy:
 - uzywanie expo router
 - uzywam i expo/routing i react-navigation, nie potrafilem sobie poradzic z przekazywaniem zmiennej do dynamicznego route uzywajac expo routing, mozliwe ze źle się za to zabrałem używając stacka
 - nazewtnicwo i struktoura plików, jestem troche zagubiony jesli chodzi o to jak ukldac pliki, czasami wyskakiwaly mi losowe bledy z nimi zwiazane wiec postanowilem nie ruszac ich poki dzialaja
+- nie kazdy element ma latitude

@@ -6,6 +6,7 @@ import { Pressable, useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
 import { FontAwesome } from '@expo/vector-icons';
 
+
 interface Artwork {
   id: string;
   title: string;
@@ -18,8 +19,6 @@ interface ArtworkApi {
   image_id: string;
 }
 
-const baseUrl = 'https://api.artic.edu/api/v1/artworks';
-const itemsPerPage = 15;
 
 const renderItem = ({ item }: { item: Artwork }) => {
   return <ArtworkItem item={item} />;
@@ -34,10 +33,12 @@ export default function App() {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ? colorScheme : 'light'];
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const baseUrl = 'https://api.artic.edu/api/v1/artworks';
+  const itemsPerPage = 15;
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = event.nativeEvent.contentOffset.y;
-    setShowScrollToTop(y > 10); // Show button when scrolled more than 200px
+    setShowScrollToTop(y > 10); 
   };
 
   const scrollToTop = () => {
