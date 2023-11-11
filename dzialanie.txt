@@ -1,0 +1,12 @@
+klikniecie na przycisk wysiwetlajace liste zdjec - przejescie na gore listy
+podwojne klikniecie na zdjecie - dodanie do ulubionyc
+
+
+
+
+Problemy:
+- nauka uzywania ts, w wiekszosci przypadtkow typuje na siłe interface'em, nie wiem na ile tak powinno być, a take jak kompletnie nie mialem pomyslu wpisywalem prompta do chatu gpt
+- zrobienie fetcha do api
+- uzywanie expo router
+- uzywam i expo/routing i react-navigation, nie potrafilem sobie poradzic z przekazywaniem zmiennej do dynamicznego route uzywajac expo routing, mozliwe ze źle się za to zabrałem używając stacka
+- nazewtnicwo i struktoura plików, jestem troche zagubiony jesli chodzi o to jak ukldac pliki, czasami wyskakiwaly mi losowe bledy z nimi zwiazane wiec postanowilem nie ruszac ich poki dzialaja
