@@ -11,12 +11,14 @@ interface Artwork {
   id: string;
   title: string;
   imageUrl: string;
+  artist_id: number;
 }
 
 interface ArtworkApi {
   id: string;
   title: string;
   image_id: string;
+  artist_id: number;
 }
 
 
@@ -30,11 +32,60 @@ const generateUniqueId = (item: Artwork, index: number) => {
 
 export default function App() {
   const flatListRef = useRef<FlatList<Artwork>>(null);
+
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ? colorScheme : 'light'];
+
+  const [data, setData] = useState<Artwork[]>([]);
+  const [page, setPage] = useState(1);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEndReached, setIsEndReached] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  
   const baseUrl = 'https://api.artic.edu/api/v1/artworks';
   const itemsPerPage = 15;
+  
+  let [fontsLoaded] = useFonts({ OpenSans_400Regular_Italic })
+
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  const fetchImages = () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    fetch(`${baseUrl}?limit=${itemsPerPage}&page=${page}`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        const newArtworks = responseJson.data.map((artwork: ArtworkApi) => {
+          return {
+            id: `${artwork.id}`,
+            title: artwork.title,
+            imageUrl: `https://www.artic.edu/iiif/2/${artwork.image_id}/full/200,/0/default.jpg`,
+            artist_id: artwork.artist_id
+          };
+        });
+
+        setData([...data, ...newArtworks]);
+        setIsEndReached(newArtworks.length < itemsPerPage);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const loadMoreItems = () => {
+    if (!isEndReached) {
+      setPage(page + 1);
+      fetchImages();
+    }
+  };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const y = event.nativeEvent.contentOffset.y;
@@ -45,6 +96,7 @@ export default function App() {
     flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
     setShowScrollToTop(false);
   };
+
 
   const styles = StyleSheet.create({
     listContainer: {
@@ -66,51 +118,6 @@ export default function App() {
       shadowOffset: { width: 0, height: 2 },
     },
   });
-
-  let [fontsLoaded] = useFonts({ OpenSans_400Regular_Italic })
-  const fallbackImage = require('../../assets/images/photo.png');
-
-  const [data, setData] = useState<Artwork[]>([]);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isEndReached, setIsEndReached] = useState(false);
-
-  useEffect(() => {
-    fetchImages();
-  }, []);
-
-  const fetchImages = () => {
-    if (isLoading) return;
-
-    setIsLoading(true);
-    fetch(`${baseUrl}?limit=${itemsPerPage}&page=${page}`)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        const newArtworks = responseJson.data.map((artwork: ArtworkApi) => {
-          return {
-            id: `${artwork.id}`,
-            title: artwork.title,
-            imageUrl: `https://www.artic.edu/iiif/2/${artwork.image_id}/full/200,/0/default.jpg`
-          };
-        });
-
-        setData([...data, ...newArtworks]);
-        setIsEndReached(newArtworks.length < itemsPerPage);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  const loadMoreItems = () => {
-    if (!isEndReached) {
-      setPage(page + 1);
-      fetchImages();
-    }
-  };
 
   return (
     <>

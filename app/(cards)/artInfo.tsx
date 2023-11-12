@@ -6,6 +6,7 @@ import { Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
+import { Link } from 'expo-router';
 
 
 type RootStackParamList = {
@@ -26,6 +27,7 @@ interface Artwork {
   place_of_origin: string;
   medium: string;
   about: string;
+  artist_id: number;
 }
 
 type ArtInfoRouteProp = RouteProp<RootStackParamList, 'ArtInfo'>;
@@ -65,9 +67,11 @@ export default function ArtInfo() {
             dimension: responseJson.data.dimensions,
             place_of_origin: responseJson.data.place_of_origin,
             medium: responseJson.data.medium_display,
-            about: responseJson.data.thumbnail.alt_text
+            about: responseJson.data.thumbnail.alt_text,
+            artist_id: responseJson.data.artist_id
           };
           setData(artwork);
+          console.log(responseJson.data.artist_id)
         }, (error) => {
           console.error(error);
           setHasError(true);
@@ -89,7 +93,7 @@ export default function ArtInfo() {
       {data ? (
         <>
           <Text style={styles.title}>"{data.title}"</Text>
-          <Text style={styles.author}>{data.artist}</Text>
+          <Link href={`./authorInfo?id=${data.artist_id}`}><Text style={styles.author}>{data.artist}</Text></Link>
           <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
           <Image
             source={hasError ? fallbackImage : { uri: data.imageUrl }}
@@ -120,7 +124,7 @@ export default function ArtInfo() {
           <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
 
           <View style={styles.textContainer}>
-            <Text style={styles.tableText}>Meidum:</Text>
+            <Text style={styles.tableText}>Medium:</Text>
             <Text style={styles.tableTextRight}>{data.medium}</Text>
           </View>
           <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />

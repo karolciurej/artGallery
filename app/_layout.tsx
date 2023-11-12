@@ -50,7 +50,8 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="(cards)/artInfo" options={{ presentation: 'card', title: "Info" }} />
+        <Stack.Screen name="(cards)/artInfo" options={{ presentation: 'card', title: "Artwork Info" }} />
+        <Stack.Screen name="(cards)/authorInfo" options={{ presentation: 'card', title: "Author Info" }} />
 
       </Stack>
     </ThemeProvider>
