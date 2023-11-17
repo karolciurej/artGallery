@@ -1,38 +1,53 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArtworkItem from "../../components/artWork";
-
-const baseUrl = '';
 
 interface Item {
   id: string;
   imageUrl: string;
   title: string;
+  artist_id: number;
+
 }
 
 export default function TabThreeScreen() {
   const [favoriteItems, setFavoriteItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  //* Sprawdzanie za każdym razem stanu asyn storage
+  useEffect(() => {
+    fetchFavoriteItems();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchFavoriteItems();
+    }, [])
+  );
+
   const fetchFavoriteItems = async () => {
     try {
       setIsLoading(true);
-      const storedIdsString = await AsyncStorage.getItem('@favorite_items');
+      const storedIdsString = await AsyncStorage.getItem("@favorite_items");
       if (!storedIdsString) {
-        console.log('No stored IDs found');
         setIsLoading(false);
         return;
       }
       const storedIds = JSON.parse(storedIdsString);
-
-      console.log('Stored IDs:', storedIds); // Dodaj log tutaj, aby upewnić się, że są to poprawne ID
-
       const fetchPromises = storedIds.map((id: string) =>
         fetch(`https://api.artic.edu/api/v1/artworks/${id}`)
-          .then(res => res.json())
-          .catch(err => console.error(`Error fetching item with ID ${id}:`, err))
+          .then((res) => res.json())
+          .catch((err) =>
+            console.error(`Error fetching item with ID ${id}:`, err)
+          )
       );
 
       const results = await Promise.all(fetchPromises);
@@ -41,13 +56,12 @@ export default function TabThreeScreen() {
           acc.push({
             id: storedIds[index],
             imageUrl: `https://www.artic.edu/iiif/2/${result.data.image_id}/full/843,/0/default.jpg`,
-            title: result.data.title
+            title: result.data.title,
           });
         }
         return acc;
       }, []);
 
-      console.log('Fetched items:', items); // Dodaj log tutaj
       setFavoriteItems(items);
     } catch (error) {
       console.error("Error fetching favorite items:", error);
@@ -57,10 +71,8 @@ export default function TabThreeScreen() {
   };
 
   useEffect(() => {
-  
     fetchFavoriteItems();
   }, []);
-  
 
   useFocusEffect(
     useCallback(() => {
@@ -69,7 +81,6 @@ export default function TabThreeScreen() {
   );
 
   const renderItem = ({ item }: { item: Item }) => {
-    console.log('Rendering item:', item);
     return <ArtworkItem item={item} />;
   };
 
@@ -82,7 +93,7 @@ export default function TabThreeScreen() {
         <FlatList
           data={favoriteItems}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
         />
       )}
     </View>
@@ -92,12 +103,12 @@ export default function TabThreeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     marginVertical: 10,
     fontSize: 20,
-    fontWeight: 'bold',
-  }
+    fontWeight: "bold",
+  },
 });

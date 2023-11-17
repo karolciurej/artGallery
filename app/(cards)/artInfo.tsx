@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, Image, Text } from 'react-native';
-import { View } from '../../components/Themed';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
-import Colors from '../../constants/Colors';
-import { Link } from 'expo-router';
+import { useState, useEffect } from "react";
+import { StyleSheet, ScrollView, Image, Text } from "react-native";
+import { View } from "../../components/Themed";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { useColorScheme } from "react-native";
+import Colors from "../../constants/Colors";
+import { Link } from "expo-router";
 
 type RootStackParamList = {
   ArtInfo: {
@@ -23,25 +23,25 @@ interface Artwork {
   dimension: string;
   place_of_origin: string;
   medium: string;
-  about: string;
   artist_id: number;
 }
 
-type ArtInfoRouteProp = RouteProp<RootStackParamList, 'ArtInfo'>;
+type ArtInfoRouteProp = RouteProp<RootStackParamList, "ArtInfo">;
 
 export default function ArtInfo() {
   const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme || 'light'];
+  const themeColors = Colors[colorScheme || "light"];
   const route = useRoute<ArtInfoRouteProp>();
   const { id } = route.params;
   const [data, setData] = useState<Artwork | null>(null);
   const [hasError, setHasError] = useState(false);
-  const fallbackImage = require('../../assets/images/photo.png');
+  const fallbackImage = require("../../assets/images/photo.png");
 
   useEffect(() => {
     fetchImages();
   }, []);
 
+  //* Fetching Art Data
   const fetchImages = () => {
     fetch(`https://api.artic.edu/api/v1/artworks/${id}`)
       .then((response) => response.json())
@@ -53,7 +53,7 @@ export default function ArtInfo() {
         if (imageId) {
           imageUrl = `https://www.artic.edu/iiif/2/${imageId}/full/300,/0/default.jpg`;
         } else {
-          imageUrl = fallbackImage; 
+          imageUrl = fallbackImage;
         }
 
         const artwork = {
@@ -67,8 +67,7 @@ export default function ArtInfo() {
           dimension: responseJson.data.dimensions,
           place_of_origin: responseJson.data.place_of_origin,
           medium: responseJson.data.medium_display,
-          about: responseJson.data.thumbnail.alt_text,
-          artist_id: responseJson.data.artist_id
+          artist_id: responseJson.data.artist_id,
         };
 
         setData(artwork);
@@ -84,51 +83,80 @@ export default function ArtInfo() {
       contentContainerStyle={styles.contentContainer}
       style={{
         flex: 1,
-        backgroundColor: themeColors.background
+        backgroundColor: themeColors.background,
       }}
     >
       {data ? (
         <>
           <Text style={styles.title}>"{data.title}"</Text>
-          <Link href={`./authorInfo?id=${data.artist_id}`}><Text style={styles.author}>{data.artist}</Text></Link>
-          <View style={styles.separator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
+          <Link href={`./authorInfo?id=${data.artist_id}`}>
+            <Text style={styles.author}>{data.artist}</Text>
+          </Link>
+          <View
+            style={styles.separator}
+            lightColor="#ddd"
+            darkColor="rgba(255,255,255,0.3)"
+          />
           <Image
-            source={hasError ? fallbackImage : { uri: data.imageUrl }}
+            source={
+              typeof data.imageUrl === "string"
+                ? { uri: data.imageUrl }
+                : data.imageUrl
+            }
             style={{ width: 300, height: data.height, marginBottom: 20 }}
             onError={() => setHasError(true)}
-            alt='Artwork Image'
+            alt="Artwork Image"
           />
 
           <View style={styles.textContainer}>
             <Text style={styles.tableText}>Date:</Text>
             {data.date_start === data.date_end ? (
-              <Text style={styles.tableTextRight}>{data.date_end}</Text>
+              <Text style={styles.tableTextRight}>
+                {data.date_end ? data.date_end : "Unknown"}
+              </Text>
             ) : (
-              <Text style={styles.tableTextRight}>{data.date_start} - {data.date_end}</Text>
+              <Text style={styles.tableTextRight}>
+                {data.date_start ? data.date_start : "Unknown"} -{" "}
+                {data.date_end ? data.date_end : "Unknown"}
+              </Text>
             )}
           </View>
-          <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
+          <View
+            style={styles.tableSeparator}
+            lightColor="#ddd"
+            darkColor="rgba(255,255,255,0.3)"
+          />
 
           <View style={styles.textContainer}>
             <Text style={styles.tableText}>Dismension:</Text>
-            <Text style={styles.tableTextRight}>{data.dimension.split("(")[0]}</Text>
+            <Text style={styles.tableTextRight}>
+              {data.dimension ? data.dimension.split("(")[0] : "Unknown"}
+            </Text>
           </View>
-          <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
+          <View
+            style={styles.tableSeparator}
+            lightColor="#ddd"
+            darkColor="rgba(255,255,255,0.3)"
+          />
 
           <View style={styles.textContainer}>
             <Text style={styles.tableText}>Origin:</Text>
-            <Text style={styles.tableTextRight}>{data.place_of_origin}</Text>
+            <Text style={styles.tableTextRight}>
+              {data.place_of_origin ? data.place_of_origin : "Unknown"}
+            </Text>
           </View>
-          <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
+          <View
+            style={styles.tableSeparator}
+            lightColor="#ddd"
+            darkColor="rgba(255,255,255,0.3)"
+          />
 
           <View style={styles.textContainer}>
             <Text style={styles.tableText}>Medium:</Text>
-            <Text style={styles.tableTextRight}>{data.medium}</Text>
+            <Text style={styles.tableTextRight}>
+              {data.medium ? data.medium : "Unknown"}
+            </Text>
           </View>
-          <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
-          <Text style={{ textAlign: "left", fontSize: 18, width: "80%", marginTop: 20 }}>About:</Text>
-          <Text style={{ textAlign: "left", fontSize: 16, width: "80%", marginTop: 20 }}>{data.about}</Text>
-
         </>
       ) : (
         <Text style={{ marginTop: 20 }}>Loading...</Text>
@@ -136,9 +164,6 @@ export default function ArtInfo() {
     </ScrollView>
   );
 }
-
-
-// Stylizacje...
 
 const styles = StyleSheet.create({
   tableText: {
@@ -150,13 +175,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     minWidth: 80,
-    textAlign: 'right',
+    textAlign: "right",
     flexShrink: 1,
   },
 
   contentContainer: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    alignItems: "center",
+    justifyContent: "flex-start",
     marginBottom: 120,
   },
   author: {
@@ -166,24 +191,23 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 20,
     fontSize: 24,
-    fontFamily: 'OpenSans_400Regular_Italic',
-    textAlign: 'right',
+    fontFamily: "OpenSans_400Regular_Italic",
+    textAlign: "right",
   },
   separator: {
     marginVertical: 20,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
   tableSeparator: {
     marginVertical: 5,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
   textContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 30,
     width: "80%",
-
-  }
+  },
 });

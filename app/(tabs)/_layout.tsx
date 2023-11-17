@@ -26,7 +26,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
       }}>
       <Tabs.Screen
-        name="index"
+        name="explore"
         options={{
           title: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />,
@@ -52,7 +52,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="search"
         options={{
           title: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
@@ -78,7 +78,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="three"
+        name="favourites"
         options={{
           title: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,

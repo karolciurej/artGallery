@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Text, View } from '../../components/Themed';
-import { Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
@@ -29,13 +28,13 @@ type ArtInfoRouteProp = RouteProp<RootStackParamList, 'ArtInfo'>;
 export default function ArtInfo() {
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ? colorScheme : 'light'];
-
   const route = useRoute<ArtInfoRouteProp>();
   const { id } = route.params;
-
   const [data, setData] = useState<Artwork | null>(null);
   const [artworks, setArtworks] = useState<string[]>([]);
   const [hasError, setHasError] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(100);
 
   const requestBody = JSON.stringify({
     query: {
@@ -53,7 +52,8 @@ export default function ArtInfo() {
   useEffect(() => {
     fetchArtworks();
   }, []);
-  
+
+  //* Fetch author artworks
   const fetchArtworks = () => {
     fetch('https://api.artic.edu/api/v1/artworks/search?limit=100', {
       method: 'POST',
@@ -74,7 +74,7 @@ export default function ArtInfo() {
     });
   };
 
-  
+  //* Fetch author info  
   const fetchArtist = () => {
     fetch(`https://api.artic.edu/api/v1/artists/${id}`)
       .then((response) => response.json())
@@ -108,8 +108,8 @@ export default function ArtInfo() {
           <Text style={styles.title}>{data.title}</Text>
           <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
 
-          <Text style={styles.author}>Born: {data.birthDate}</Text>
-          <Text style={styles.author}>Died: {data.deathDate}</Text>
+          <Text style={styles.author}>Born: {data.birthDate ? data.birthDate : "Unknown"}</Text>
+          <Text style={styles.author}>Died: {data.deathDate ? data.birthDate : "Unknown"}</Text>
           <View style={styles.tableSeparator} lightColor="#ddd" darkColor="rgba(255,255,255,0.3)" />
 
           <Text style={{ fontSize: 20, marginTop: 16}}>Artworks:</Text>
