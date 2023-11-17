@@ -138,7 +138,7 @@ export default function App() {
           onPress={scrollToTop}
           style={styles.scrollToTopButton}
         >
-          <FontAwesome name="arrow-up" size={24} color="black" />
+          <FontAwesome name="arrow-up" size={24} color={themeColors.text} />
         </TouchableOpacity>
       )}
     </>

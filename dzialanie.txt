@@ -1,5 +1,4 @@
 klikniecie na przycisk wysiwetlajace liste zdjec - przejescie na gore listy
-podwojne klikniecie na zdjecie - dodanie do ulubionyc
 
 
 
@@ -12,3 +11,4 @@ Problemy:
 - nazewtnicwo i struktoura plików, jestem troche zagubiony jesli chodzi o to jak ukldac pliki, czasami wyskakiwaly mi losowe bledy z nimi zwiazane wiec postanowilem nie ruszac ich poki dzialaja
 - nie kazdy element ma latitude
 - duzo nulli w api, rzeczy ktore chcialbym uzyc w aplikacji czesto sa po prostu puste
+- 

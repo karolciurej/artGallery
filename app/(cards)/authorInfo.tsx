@@ -95,9 +95,6 @@ export default function ArtInfo() {
   };
   
 
-
-
-
   return (
     <ScrollView
       contentContainerStyle={styles.contentContainer}

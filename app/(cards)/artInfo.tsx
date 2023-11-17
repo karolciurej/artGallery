@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView, Image, Text } from 'react-native';
+import { View } from '../../components/Themed';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { Text, View } from '../../components/Themed';
-import { Image } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
 import { Link } from 'expo-router';
-
 
 type RootStackParamList = {
   ArtInfo: {
@@ -34,14 +31,11 @@ type ArtInfoRouteProp = RouteProp<RootStackParamList, 'ArtInfo'>;
 
 export default function ArtInfo() {
   const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ? colorScheme : 'light'];
-
+  const themeColors = Colors[colorScheme || 'light'];
   const route = useRoute<ArtInfoRouteProp>();
   const { id } = route.params;
-
   const [data, setData] = useState<Artwork | null>(null);
   const [hasError, setHasError] = useState(false);
-
   const fallbackImage = require('../../assets/images/photo.png');
 
   useEffect(() => {
@@ -52,34 +46,37 @@ export default function ArtInfo() {
     fetch(`https://api.artic.edu/api/v1/artworks/${id}`)
       .then((response) => response.json())
       .then((responseJson) => {
-        const imageUrl = `https://www.artic.edu/iiif/2/${responseJson.data.image_id}/full/300,/0/default.jpg`;
-        Image.getSize(imageUrl, (width: number, height: number) => {
-          const aspectRatio = height / width;
-          const newHeight = 300 * aspectRatio;
-          const artwork = {
-            id: `${responseJson.data.id}`,
-            title: responseJson.data.title,
-            imageUrl: imageUrl,
-            height: newHeight,
-            artist: responseJson.data.artist_title,
-            date_start: responseJson.data.date_start,
-            date_end: responseJson.data.date_end,
-            dimension: responseJson.data.dimensions,
-            place_of_origin: responseJson.data.place_of_origin,
-            medium: responseJson.data.medium_display,
-            about: responseJson.data.thumbnail.alt_text,
-            artist_id: responseJson.data.artist_id
-          };
-          setData(artwork);
-          console.log(responseJson.data.artist_id)
-        }, (error) => {
-          console.error(error);
-          setHasError(true);
-        });
+        const imageId = responseJson.data.image_id;
+        let imageUrl;
+        let newHeight = 300;
+
+        if (imageId) {
+          imageUrl = `https://www.artic.edu/iiif/2/${imageId}/full/300,/0/default.jpg`;
+        } else {
+          imageUrl = fallbackImage; 
+        }
+
+        const artwork = {
+          id: responseJson.data.id,
+          title: responseJson.data.title,
+          imageUrl: imageUrl,
+          height: newHeight,
+          artist: responseJson.data.artist_title,
+          date_start: responseJson.data.date_start,
+          date_end: responseJson.data.date_end,
+          dimension: responseJson.data.dimensions,
+          place_of_origin: responseJson.data.place_of_origin,
+          medium: responseJson.data.medium_display,
+          about: responseJson.data.thumbnail.alt_text,
+          artist_id: responseJson.data.artist_id
+        };
+
+        setData(artwork);
       })
       .catch((error) => {
         console.error(error);
-      })
+        setHasError(true);
+      });
   };
 
   return (
@@ -101,6 +98,7 @@ export default function ArtInfo() {
             onError={() => setHasError(true)}
             alt='Artwork Image'
           />
+
           <View style={styles.textContainer}>
             <Text style={styles.tableText}>Date:</Text>
             {data.date_start === data.date_end ? (
@@ -138,6 +136,9 @@ export default function ArtInfo() {
     </ScrollView>
   );
 }
+
+
+// Stylizacje...
 
 const styles = StyleSheet.create({
   tableText: {
