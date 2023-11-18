@@ -2,7 +2,9 @@ Project created for Software Mantion competition
 
 ```
 How is app working:
--Clicking an image to navigatr to card about this artwork
+-Explore, search and favourites tabs
+-Clicking on heart is adding artwork to favourited
+-Clicking an image to navigate to card about this artwork
 -Clicking the artist's name in card about artwork to navigate to card about author
 -Clicking the arrow button near the image list to scroll to the top of the list
 -Resetting favorites in settings
