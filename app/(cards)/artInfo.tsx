@@ -24,6 +24,7 @@ interface Artwork {
   place_of_origin: string;
   medium: string;
   artist_id: number;
+  isZoomable: boolean;
 }
 
 type ArtInfoRouteProp = RouteProp<RootStackParamList, "ArtInfo">;
@@ -68,6 +69,7 @@ export default function ArtInfo() {
           place_of_origin: responseJson.data.place_of_origin,
           medium: responseJson.data.medium_display,
           artist_id: responseJson.data.artist_id,
+          isZoomable: responseJson.data.isZoomable,
         };
 
         setData(artwork);
@@ -97,16 +99,36 @@ export default function ArtInfo() {
             lightColor="#ddd"
             darkColor="rgba(255,255,255,0.3)"
           />
-          <Image
-            source={
-              typeof data.imageUrl === "string"
-                ? { uri: data.imageUrl }
-                : data.imageUrl
-            }
-            style={{ width: 300, height: data.height, marginBottom: 20 }}
-            onError={() => setHasError(true)}
-            alt="Artwork Image"
-          />
+    {data.isZoomable ? (
+      <ScrollView 
+        maximumZoomScale={3.0} 
+        minimumZoomScale={1.0} 
+        pinchGestureEnabled={true} 
+        style={{ width: 300, height: data.height }}
+      >
+        <Image
+          source={
+            typeof data.imageUrl === "string"
+              ? { uri: data.imageUrl }
+              : data.imageUrl
+          }
+          style={{ width: 300, height: data.height, marginBottom: 20 }}
+          onError={() => setHasError(true)}
+          alt="Artwork Image"
+        />
+      </ScrollView>
+    ) : (
+      <Image
+        source={
+          typeof data.imageUrl === "string"
+            ? { uri: data.imageUrl }
+            : data.imageUrl
+        }
+        style={{ width: 300, height: data.height, marginBottom: 20 }}
+        onError={() => setHasError(true)}
+        alt="Artwork Image"
+      />
+    )}
 
           <View style={styles.textContainer}>
             <Text style={styles.tableText}>Date:</Text>
