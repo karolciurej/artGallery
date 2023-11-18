@@ -24,7 +24,7 @@ interface Artwork {
   place_of_origin: string;
   medium: string;
   artist_id: number;
-  isZoomable: boolean;
+  is_zoomable: boolean;
 }
 
 type ArtInfoRouteProp = RouteProp<RootStackParamList, "ArtInfo">;
@@ -69,8 +69,9 @@ export default function ArtInfo() {
           place_of_origin: responseJson.data.place_of_origin,
           medium: responseJson.data.medium_display,
           artist_id: responseJson.data.artist_id,
-          isZoomable: responseJson.data.isZoomable,
+          is_zoomable: responseJson.data.is_zoomable,
         };
+        console.log(responseJson.data.is_zoomable)
 
         setData(artwork);
       })
@@ -90,98 +91,94 @@ export default function ArtInfo() {
     >
       {data ? (
         <>
-          <Text style={styles.title}>"{data.title}"</Text>
+          <Text style={[styles.title, { color: themeColors.text }]}>
+            "{data.title}"
+          </Text>
           <Link href={`./authorInfo?id=${data.artist_id}`}>
-            <Text style={styles.author}>{data.artist}</Text>
+            <Text style={[styles.author, { color: themeColors.text }]}>
+              {data.artist}
+            </Text>
           </Link>
           <View
             style={styles.separator}
             lightColor="#ddd"
             darkColor="rgba(255,255,255,0.3)"
           />
-    {data.isZoomable ? (
-      <ScrollView 
-        maximumZoomScale={3.0} 
-        minimumZoomScale={1.0} 
-        pinchGestureEnabled={true} 
-        style={{ width: 300, height: data.height }}
-      >
-        <Image
-          source={
-            typeof data.imageUrl === "string"
-              ? { uri: data.imageUrl }
-              : data.imageUrl
-          }
-          style={{ width: 300, height: data.height, marginBottom: 20 }}
-          onError={() => setHasError(true)}
-          alt="Artwork Image"
-        />
-      </ScrollView>
-    ) : (
-      <Image
-        source={
-          typeof data.imageUrl === "string"
-            ? { uri: data.imageUrl }
-            : data.imageUrl
-        }
-        style={{ width: 300, height: data.height, marginBottom: 20 }}
-        onError={() => setHasError(true)}
-        alt="Artwork Image"
-      />
-    )}
-
+          {data.is_zoomable ? (
+            <ScrollView 
+              maximumZoomScale={3.0} 
+              minimumZoomScale={1.0} 
+              pinchGestureEnabled={true} 
+              style={{ width: 300, height: data.height }}
+            >
+              <Image
+                source={
+                  typeof data.imageUrl === "string"
+                    ? { uri: data.imageUrl }
+                    : data.imageUrl
+                }
+                style={{ width: 300, height: data.height, marginBottom: 20 }}
+                onError={() => setHasError(true)}
+                alt="Artwork Image"
+              />
+            </ScrollView>
+          ) : (
+            <Image
+              source={
+                typeof data.imageUrl === "string"
+                  ? { uri: data.imageUrl }
+                  : data.imageUrl
+              }
+              style={{ width: 300, height: data.height, marginBottom: 20 }}
+              onError={() => setHasError(true)}
+              alt="Artwork Image"
+            />
+          )}
           <View style={styles.textContainer}>
-            <Text style={styles.tableText}>Date:</Text>
-            {data.date_start === data.date_end ? (
-              <Text style={styles.tableTextRight}>
-                {data.date_end ? data.date_end : "Unknown"}
-              </Text>
-            ) : (
-              <Text style={styles.tableTextRight}>
-                {data.date_start ? data.date_start : "Unknown"} -{" "}
-                {data.date_end ? data.date_end : "Unknown"}
-              </Text>
-            )}
+            <Text style={[styles.tableText, { color: themeColors.text }]}>
+              Date:
+            </Text>
+            <Text style={[styles.tableTextRight, { color: themeColors.text }]}>
+              {data.date_start === data.date_end ? (
+                data.date_end ? data.date_end : "Unknown"
+              ) : (
+                `${data.date_start ? data.date_start : "Unknown"} - ${data.date_end ? data.date_end : "Unknown"}`
+              )}
+            </Text>
           </View>
-          <View
-            style={styles.tableSeparator}
-            lightColor="#ddd"
-            darkColor="rgba(255,255,255,0.3)"
-          />
-
+          <View style={[ styles.tableSeparator, { backgroundColor: themeColors.text }]} />
           <View style={styles.textContainer}>
-            <Text style={styles.tableText}>Dismension:</Text>
-            <Text style={styles.tableTextRight}>
+            <Text style={[styles.tableText, { color: themeColors.text }]}>
+              Dimension:
+            </Text>
+            <Text style={[styles.tableTextRight, { color: themeColors.text }]}>
               {data.dimension ? data.dimension.split("(")[0] : "Unknown"}
             </Text>
           </View>
-          <View
-            style={styles.tableSeparator}
-            lightColor="#ddd"
-            darkColor="rgba(255,255,255,0.3)"
-          />
-
+          <View style={[ styles.tableSeparator, { backgroundColor: themeColors.text }]} />
           <View style={styles.textContainer}>
-            <Text style={styles.tableText}>Origin:</Text>
-            <Text style={styles.tableTextRight}>
+            <Text style={[styles.tableText, { color: themeColors.text }]}>
+              Origin:
+            </Text>
+            <Text style={[styles.tableTextRight, { color: themeColors.text }]}>
               {data.place_of_origin ? data.place_of_origin : "Unknown"}
             </Text>
           </View>
-          <View
-            style={styles.tableSeparator}
-            lightColor="#ddd"
-            darkColor="rgba(255,255,255,0.3)"
-          />
-
+          <View style={[ styles.tableSeparator, { backgroundColor: themeColors.text }]} />
           <View style={styles.textContainer}>
-            <Text style={styles.tableText}>Medium:</Text>
-            <Text style={styles.tableTextRight}>
+            <Text style={[styles.tableText, { color: themeColors.text }]}>
+              Medium:
+            </Text>
+            <Text style={[styles.tableTextRight, { color: themeColors.text }]}>
               {data.medium ? data.medium : "Unknown"}
             </Text>
+            
           </View>
+          <View style={[ styles.tableSeparator, { backgroundColor: themeColors.text }]} />
+
         </>
       ) : (
-        <Text style={{ marginTop: 20 }}>Loading...</Text>
+        <Text style={{ marginTop: 20, color: themeColors.text }}>Loading...</Text>
       )}
     </ScrollView>
   );
